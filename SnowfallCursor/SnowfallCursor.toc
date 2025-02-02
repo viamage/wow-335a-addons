@@ -1,0 +1,4 @@
+## Interface: 30300
+## Title: SnowfallCursor
+## Notes: Highlights the cursor when it is moving
+SnowfallCursor.lua
