@@ -208,16 +208,25 @@
 
 
 
-	<Frame name="GearScore_StatsFrame" inherits="StatGroupTemplate" parent="CharacterStatsPaneScrollChild">
+	<Frame name="GearScore_StatsFrame" parent="CharacterStatsPaneScrollChild">
 		<Size x="169" y="350"/>
 		<Scripts>
 			<OnLoad>
 				<![CDATA[
+				if type(PAPERDOLL_STATCATEGORY_DEFAULTORDER) ~= "table" then
+					PAPERDOLL_STATCATEGORY_DEFAULTORDER = {}; -- Ensure it's a table
+				end
 				local id = #PAPERDOLL_STATCATEGORY_DEFAULTORDER + 1;
-				local frame = CreateFrame("Frame", "CharacterStatsPaneCategory"..id, CharacterStatsPaneScrollChild, "StatGroupTemplate");
+				local frame = CreateFrame("Frame", "CharacterStatsPaneCategory"..id, CharacterStatsPaneScrollChild);
 				STAT_CATEGORY_GEARSCORE = "GearScore";
+				if type(PAPERDOLL_STATCATEGORIES) ~= "table" then
+					PAPERDOLL_STATCATEGORIES = {}; -- Ensure it's a table
+				end
 				PAPERDOLL_STATCATEGORIES["GEARSCORE"] = {["id"] = id,stats = {"GS_GEARSCORE"}};
-				tinsert(PAPERDOLL_STATCATEGORY_DEFAULTORDER, 1, "GEARSCORE");
+				table.insert(PAPERDOLL_STATCATEGORY_DEFAULTORDER, 1, "GEARSCORE");
+				if type(PAPERDOLL_STATINFO) ~= "table" then
+					PAPERDOLL_STATINFO = {}; -- Ensure it's a table
+				end
 				PAPERDOLL_STATINFO ["GS_GEARSCORE"] = {updateFunc = function(statFrame, unit) GS_StatsUpdate(statFrame, unit); end};
 				function GS_StatsUpdate(statFrame, unit)
 					local statValue = 0;
