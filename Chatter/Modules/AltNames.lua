@@ -327,6 +327,7 @@ function mod:ScanGuildNotes()
 	-- #2: scan all words in all guild notes, see if a name is mentioned
 	for i=1,GetNumGuildMembers(true) do
 		local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
+		note = note or ""
 		local success
 		for word in gmatch(strlower(note), "[%a\128-\255]+") do
 			if names[word] then
