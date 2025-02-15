@@ -121,16 +121,47 @@ function GearScore_OnEvent(GS_Nil, GS_EventName, GS_Prefix, GS_AddonMessage, GS_
 			if ( tbl[1] == UnitName("player") ) or (( tbl[11] ~= GS_Sender ) and ( tbl[11] ~= " ") ) then return; end
 			if ( tbl[1] ) and ( tbl[2] ) and ( tbl[3] ) then
 				--IF No GearScore Record was Found
-				if not ( GS_Data[GetRealmName()].Players[tbl[1]] ) then
-					local TestAuthenticity = GearScore_ComposeRecord(tbl, GS_Sender)
-					if TestAuthenticity then return end
-					if ( UnitName("mouseover") == tbl[1] ) then GameTooltip:SetUnit(tbl[1]); end
-					if ( GS_DisplayPlayer == tbl[1] ) and ( GS_DisplayFrame:IsVisible() ) then GearScore_DisplayUnit(tbl[1], 1); end
-					if ( ( GS_Factions[GS_Data[GetRealmName()].Players[tbl[1]].Faction] ~= UnitFactionGroup("player") ) and ( GS_Settings["KeepFaction"] == -1 ) ) or ( ( GS_Data[GetRealmName()].Players[tbl[1]].Level < GS_Settings["MinLevel"] ) and ( tbl[1] ~= UnitName("player") ) ) then GS_Data[GetRealmName()].Players[tbl[1]] = nil; end
-					if ( (type(tonumber(tbl[10]))) == "number" ) then GS_Data[GetRealmName()].Players[tbl[1]] = nil; end
-					return
-				end
+				-- if not ( GS_Data[GetRealmName()].Players[tbl[1]] ) then
+				-- 	local TestAuthenticity = GearScore_ComposeRecord(tbl, GS_Sender)
+				-- 	if TestAuthenticity then return end
+				-- 	if ( UnitName("mouseover") == tbl[1] ) then GameTooltip:SetUnit(tbl[1]); end
+				-- 	if ( GS_DisplayPlayer == tbl[1] ) and ( GS_DisplayFrame:IsVisible() ) then GearScore_DisplayUnit(tbl[1], 1); end
+				-- 	if ( ( GS_Factions[GS_Data[GetRealmName()].Players[tbl[1]].Faction] ~= UnitFactionGroup("player") ) and ( GS_Settings["KeepFaction"] == -1 ) ) or ( ( GS_Data[GetRealmName()].Players[tbl[1]].Level < GS_Settings["MinLevel"] ) and ( tbl[1] ~= UnitName("player") ) ) then GS_Data[GetRealmName()].Players[tbl[1]] = nil; end
+				-- 	if ( (type(tonumber(tbl[10]))) == "number" ) then GS_Data[GetRealmName()].Players[tbl[1]] = nil; end
+				-- 	return
+				-- end
+                if not ( GS_Data and GS_Data[GetRealmName()] and GS_Data[GetRealmName()].Players ) then
+                    print("|cffff0000GearScore Error: GS_Data is missing!|r")
+                    return
+                end
 
+                if not ( GS_Data[GetRealmName()].Players[tbl[1]] ) then
+                    local TestAuthenticity = GearScore_ComposeRecord(tbl, GS_Sender)
+                    if TestAuthenticity then return end
+
+                    if ( UnitName("mouseover") == tbl[1] ) then GameTooltip:SetUnit(tbl[1]); end
+                    if ( GS_DisplayPlayer == tbl[1] ) and ( GS_DisplayFrame:IsVisible() ) then GearScore_DisplayUnit(tbl[1], 1); end
+
+                    -- Ensure player data exists before checking Faction and Level
+                    local playerData = GS_Data[GetRealmName()].Players[tbl[1]]
+                    if playerData then
+                        local playerFaction = playerData.Faction or "Unknown"
+                        local playerLevel = playerData.Level or 1
+
+                        if (GS_Factions[playerFaction] and GS_Factions[playerFaction] ~= UnitFactionGroup("player")
+                            and GS_Settings["KeepFaction"] == -1)
+                        or (playerLevel < (GS_Settings["MinLevel"] or 1) and tbl[1] ~= UnitName("player")) then
+                            GS_Data[GetRealmName()].Players[tbl[1]] = nil
+                        end
+                    else
+                        print("|cffff0000GearScore Error: Player data is missing for " .. tbl[1] .. "!|r")
+                    end
+
+                    if ( (type(tonumber(tbl[10]))) == "number" ) then
+                        GS_Data[GetRealmName()].Players[tbl[1]] = nil
+                    end
+                    return
+                end
 				--If GearScore Record Needs Updating
 				--if  ( tonumber(GS_Data[GetRealmName()].Players[tbl[1]].GearScore) ~= tonumber(tbl[2]) ) or ( tonumber(GS_Data[GetRealmName()].Players[tbl[1]].Date) ~= tonumber(tbl[3]) ) then
 				if not ( tonumber(GS_Data[GetRealmName()].Players[tbl[1]].Date) >= tonumber(tbl[3]) ) then
