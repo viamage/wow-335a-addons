@@ -162,11 +162,19 @@ function HealBot_Panel_SethbTopRole(Role)
 end
 
 function HealBot_Panel_SetBarArrays(bx)
+    if not bx then
+        print("|cffff0000HealBot Error: HealBot_Panel_SetHeadArrays called with nil value!|r")
+        return
+    end
     HealBot_BarX[bx]=0;
     HealBot_BarY[bx]=0;
 end
 
 function HealBot_Panel_SetHeadArrays(bx)
+    if not bx then
+        print("|cffff0000HealBot Error: HealBot_Panel_SetHeadArrays called with nil value!|r")
+        return
+    end
     HealBot_HeadX[bx]=0;
     HealBot_HeadY[bx]=0;
 end
