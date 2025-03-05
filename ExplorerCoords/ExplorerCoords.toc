@@ -1,0 +1,11 @@
+## Interface: 30300
+## Title: ExplorerCoords
+## Author: UnknownX
+## Version: 1.21
+## Notes: Shows all coords left to explore for the achievement
+## SavedVariables: ExplorerCoords_Config, ExplorerCoord
+Astrolabe\Load.xml
+ExplorerCoords.xml
+ExplorerCoords_lang.lua
+explorer_data.lua
+ExplorerCoordsConfig.lua
